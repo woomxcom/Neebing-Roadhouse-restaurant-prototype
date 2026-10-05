@@ -1,0 +1,6 @@
+{
+  "name": "The Neebing Roadhouse",
+  "description": "Interactive modern digital chalkboard menu and takeout ordering engine for The Neebing Roadhouse on Highway 61, Thunder Bay.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
