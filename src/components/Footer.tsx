@@ -6,6 +6,21 @@ export const Footer: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
+    e.preventDefault();
+    const cleanId = targetId.replace('#', '');
+    const element = document.getElementById(cleanId);
+    if (element) {
+      const headerOffset = 70;
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   return (
     <footer className="bg-[#0e1012] border-t border-white/10 text-gray-400 text-xs py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -33,23 +48,39 @@ export const Footer: React.FC = () => {
             </span>
             <ul className="space-y-2">
               <li>
-                <a href="#menu-chalkboard" className="hover:text-[#E5A93C] transition-colors">
-                  Chalkboard Menu
+                <a
+                  href="#menu-chalkboard"
+                  onClick={(e) => handleNavClick(e, '#menu-chalkboard')}
+                  className="hover:text-[#E5A93C] transition-colors cursor-pointer"
+                >
+                  Menu
                 </a>
               </li>
               <li>
-                <a href="#takeout-section" className="hover:text-[#E5A93C] transition-colors">
-                  Curbside Takeout
+                <a
+                  href="#takeout-section"
+                  onClick={(e) => handleNavClick(e, '#takeout-section')}
+                  className="hover:text-[#E5A93C] transition-colors cursor-pointer"
+                >
+                  Takeout
                 </a>
               </li>
               <li>
-                <a href="#venue-guide" className="hover:text-[#E5A93C] transition-colors">
-                  Seating Guide & Policies
+                <a
+                  href="#venue-guide"
+                  onClick={(e) => handleNavClick(e, '#venue-guide')}
+                  className="hover:text-[#E5A93C] transition-colors cursor-pointer"
+                >
+                  Venue Guide
                 </a>
               </li>
               <li>
-                <a href="#hours-location" className="hover:text-[#E5A93C] transition-colors">
-                  Operating Hours & Map
+                <a
+                  href="#hours-location"
+                  onClick={(e) => handleNavClick(e, '#hours-location')}
+                  className="hover:text-[#E5A93C] transition-colors cursor-pointer"
+                >
+                  Hours & Map
                 </a>
               </li>
             </ul>

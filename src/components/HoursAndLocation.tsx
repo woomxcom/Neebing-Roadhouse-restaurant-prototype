@@ -25,7 +25,7 @@ export const HoursAndLocation: React.FC = () => {
   ];
 
   return (
-    <section id="hours-location" className="py-16 sm:py-24 chalkboard-bg border-b border-white/10 text-[#F5F5F3] relative overflow-hidden">
+    <section id="hours-location" className="scroll-mt-20 py-16 sm:py-24 chalkboard-bg border-b border-white/10 text-[#F5F5F3] relative overflow-hidden">
       {/* Subtle floating background utensil etchings */}
       <UtensilBackgroundParticles density="normal" />
 

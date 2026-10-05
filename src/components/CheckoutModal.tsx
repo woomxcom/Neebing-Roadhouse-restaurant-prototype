@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { CartItem, CheckoutDetails, ConfirmedOrder } from '../types';
 import { 
   X, 
@@ -7,12 +8,13 @@ import {
   Phone, 
   User, 
   CreditCard, 
-  Smartphone, 
   Clock, 
   AlertCircle,
-  ShieldCheck,
-  Receipt,
-  ArrowRight
+  Navigation,
+  Sparkles,
+  ArrowRight,
+  MapPin,
+  Check
 } from 'lucide-react';
 
 interface CheckoutModalProps {
@@ -43,17 +45,20 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const [customerPhone, setCustomerPhone] = useState('(807) 555-0199');
   const [customerEmail, setCustomerEmail] = useState('alex.h@gmail.com');
   const [isCurbside, setIsCurbside] = useState(true);
-  const [vehicleDescription, setVehicleDescription] = useState('Grey Ford F-150');
-  const [curbsideSpot, setCurbsideSpot] = useState('Spot 3');
+  const [vehicleDescription, setVehicleDescription] = useState('Silver Ford F-150');
+  const [curbsideSpot, setCurbsideSpot] = useState('Stall 2');
   const [paymentMethod, setPaymentMethod] = useState<'apple_pay' | 'google_pay' | 'credit_card' | 'pay_at_pickup'>('apple_pay');
   const [cardNumber, setCardNumber] = useState('•••• •••• •••• 4242');
   const [cardExpiry, setCardExpiry] = useState('12/28');
   const [cardCvc, setCardCvc] = useState('849');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [confirmedOrder, setConfirmedOrder] = useState<ConfirmedOrder | null>(null);
+  const [hasNotifiedArrival, setHasNotifiedArrival] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   if (!isOpen) return null;
+
+  const stallOptions = ['Stall 1', 'Stall 2', 'Stall 3', 'Stall 4', 'General Parking'];
 
   // Financials
   const subtotal = items.reduce((acc, item) => acc + item.totalPrice, 0);
@@ -73,8 +78,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
     // Simulate rapid processing
     setTimeout(() => {
-      const orderNum = `NB-${Math.floor(1000 + Math.random() * 9000)}`;
-      const readyTime = pickupType === 'asap' ? 'in 25-30 minutes' : `at ${scheduledTime}`;
+      const orderNum = `NR-${Math.floor(8000 + Math.random() * 1000)}`;
+      const readyTime = pickupType === 'asap' ? 'in 25-35 minutes' : `at ${scheduledTime}`;
 
       const newOrder: ConfirmedOrder = {
         orderNumber: orderNum,
@@ -107,108 +112,176 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     }, 600);
   };
 
+  const handleCloseAndReset = () => {
+    setConfirmedOrder(null);
+    setHasNotifiedArrival(false);
+    onClose();
+  };
+
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/85 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 animate-in fade-in duration-200">
-      <div className="relative w-full max-w-xl bg-[#1a1e24] text-[#F5F5F3] rounded-2xl border border-white/15 shadow-2xl overflow-hidden max-h-[95vh] flex flex-col">
-        {/* Header */}
-        <div className="p-4 sm:p-5 border-b border-white/10 bg-[#141618] flex items-center justify-between">
-          <div>
-            <span className="font-script text-[#E5A93C] text-base block -mb-1">Fast & Frictionless</span>
-            <h3 className="font-chalk text-2xl sm:text-3xl tracking-wide text-white">
-              {confirmedOrder ? 'ORDER CONFIRMED' : 'CURBSIDE TAKEOUT CHECKOUT'}
-            </h3>
-          </div>
-          <button
-            onClick={onClose}
-            className="p-1.5 text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition-colors"
-            aria-label="Close modal"
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-3 sm:p-6">
+          {/* Backdrop with fade */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.22, ease: 'easeOut' }}
+            onClick={handleCloseAndReset}
+            className="fixed inset-0 bg-black/85 backdrop-blur-sm cursor-pointer"
+          />
+
+          {/* Modal Container with scale/fade */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.94, y: 16 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 12 }}
+            transition={{ type: 'spring', damping: 28, stiffness: 340, mass: 0.8 }}
+            className="relative w-full max-w-xl bg-[#1A1D23] text-[#F5F5F3] rounded-2xl border border-white/15 shadow-2xl overflow-hidden max-h-[95vh] flex flex-col z-10"
           >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+            {/* Header */}
+            <div className="p-4 sm:p-5 border-b border-white/10 bg-[#141618] flex items-center justify-between">
+              <div>
+                <span className="font-script text-[#E5A93C] text-base block -mb-1">
+                  {confirmedOrder ? 'Order Tracking' : 'Fast & Frictionless'}
+                </span>
+                <h3 className="font-chalk text-2xl sm:text-3xl tracking-wide text-white">
+                  {confirmedOrder ? 'ORDER CONFIRMED' : 'CURBSIDE TAKEOUT CHECKOUT'}
+                </h3>
+              </div>
+              <button
+                onClick={handleCloseAndReset}
+                className="p-1.5 text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition-colors"
+                aria-label="Close modal"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6">
           {confirmedOrder ? (
             /* ==========================================
-               POST-ORDER SUCCESS & TRACKING STATE
+               INTERACTIVE ORDER CONFIRMATION / TRACKING
                ========================================== */
-            <div className="space-y-6 animate-in fade-in zoom-in-95 duration-200">
-              <div className="text-center py-4">
+            <div className="space-y-5 animate-in fade-in zoom-in-95 duration-200">
+              {/* Status Header */}
+              <div className="text-center py-2">
                 <div className="w-16 h-16 rounded-full bg-emerald-500/20 border-2 border-emerald-500 flex items-center justify-center mx-auto mb-3 text-emerald-400">
                   <CheckCircle2 className="w-10 h-10 stroke-[2.5]" />
                 </div>
-                <h4 className="font-chalk text-3xl text-white tracking-wide">
-                  ORDER #{confirmedOrder.orderNumber} RECEIVED
+                <h4 className="font-chalk text-3xl sm:text-4xl text-white tracking-wide">
+                  ORDER CONFIRMED & SENT TO KITCHEN!
                 </h4>
-                <p className="text-emerald-400 font-semibold text-sm mt-1">
-                  Ready {confirmedOrder.estimatedReadyTime}
-                </p>
-                <p className="text-gray-400 text-xs mt-1">
+                <div className="flex items-center justify-center gap-2 mt-1">
+                  <span className="font-mono font-bold text-sm bg-black/40 px-2.5 py-0.5 rounded text-[#E5A93C] border border-[#E5A93C]/30">
+                    #{confirmedOrder.orderNumber}
+                  </span>
+                  <span className="text-gray-400 text-xs">•</span>
+                  <span className="text-emerald-400 font-semibold text-xs sm:text-sm">
+                    Estimated Pickup: 25–35 Minutes
+                  </span>
+                </div>
+                <p className="text-gray-400 text-xs mt-1.5">
                   Confirmation text sent to <strong className="text-gray-200">{confirmedOrder.checkoutDetails.customerPhone}</strong>
                 </p>
               </div>
 
-              {/* Progress Step Indicator */}
-              <div className="bg-[#141618] p-4 rounded-xl border border-white/10 space-y-3">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-[#E5A93C] block">
-                  Live Kitchen Status
-                </span>
-                <div className="grid grid-cols-3 gap-2 text-center text-xs">
-                  <div className="p-2 rounded bg-emerald-950/80 border border-emerald-700/50 text-emerald-300 font-semibold">
-                    <span className="block text-[10px] text-gray-400">Step 1</span>
-                    Order Placed
+              {/* Curbside Check-in Card with Interactive Runner Alert */}
+              <div className="p-4 bg-[#141618] border border-[#E5A93C]/40 rounded-xl space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 font-bold text-[#E5A93C] text-xs uppercase tracking-wider">
+                    <Car className="w-4 h-4" />
+                    <span>Curbside Runner Check-In</span>
                   </div>
-                  <div className="p-2 rounded bg-[#E5A93C]/20 border border-[#E5A93C]/40 text-[#E5A93C] font-semibold animate-pulse">
-                    <span className="block text-[10px] text-gray-400">Step 2</span>
-                    In Kitchen Ovens
-                  </div>
-                  <div className="p-2 rounded bg-[#1e2228] border border-white/5 text-gray-500">
-                    <span className="block text-[10px] text-gray-400">Step 3</span>
-                    Curbside Ready
-                  </div>
+                  <span className="text-[11px] font-mono text-gray-300">
+                    Vehicle: <strong className="text-white">{confirmedOrder.checkoutDetails.vehicleDescription || 'Silver F-150'}</strong> • <strong className="text-[#E5A93C]">{confirmedOrder.checkoutDetails.curbsideSpot || 'Stall 2'}</strong>
+                  </span>
                 </div>
-              </div>
 
-              {/* Curbside pickup instructions */}
-              <div className="p-4 bg-[#E5A93C]/10 border border-[#E5A93C]/30 rounded-xl space-y-2 text-xs">
-                <div className="flex items-center gap-2 font-bold text-[#E5A93C] text-sm">
-                  <Car className="w-4 h-4" />
-                  <span>Curbside Pickup Instructions</span>
-                </div>
-                <p className="text-gray-300 leading-relaxed">
-                  When you arrive along <strong>Highway 61</strong>, park in any designated Takeout Stall (1–4). 
-                  Text/call <strong className="text-white font-mono">(807) 475-3544</strong> or reply to your SMS link with your stall number for immediate runner service!
+                <p className="text-xs text-gray-300 leading-relaxed">
+                  Upon arrival along Highway 61, pull directly into your reserved Takeout Stall. Tap below to notify our expediter runner for immediate window delivery:
                 </p>
+
+                {hasNotifiedArrival ? (
+                  <div className="p-3 bg-emerald-950/90 border border-emerald-500/50 rounded-xl flex items-center justify-center gap-2 text-emerald-300 font-semibold text-xs animate-in zoom-in-95 duration-200">
+                    <Check className="w-4 h-4 text-emerald-400 stroke-[3]" />
+                    <span>Runner Notified! Hot Order on the Way to Your Car</span>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setHasNotifiedArrival(true)}
+                    className="w-full py-3 bg-[#E5A93C] hover:bg-[#d4982d] text-black font-bold rounded-xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md transition-all active:scale-95"
+                  >
+                    <Car className="w-4 h-4" />
+                    <span>Tap When You've Arrived</span>
+                  </button>
+                )}
               </div>
 
-              {/* Receipt Summary */}
+              {/* Itemized Order Summary */}
               <div className="p-4 bg-[#141618] rounded-xl border border-white/10 space-y-2 text-xs">
                 <div className="flex items-center justify-between font-semibold text-gray-300 border-b border-white/10 pb-2">
-                  <span>Summary ({confirmedOrder.items.length} items)</span>
+                  <span>Itemized Receipt ({confirmedOrder.items.length} items)</span>
                   <span className="font-mono text-[#E5A93C]">${confirmedOrder.total.toFixed(2)}</span>
                 </div>
-                <div className="space-y-1 pt-1 text-gray-400">
+                <div className="space-y-1.5 pt-1 text-gray-400">
                   {confirmedOrder.items.map((item, idx) => (
                     <div key={idx} className="flex justify-between">
-                      <span>{item.quantity}x {item.menuItem.name} {item.selectedPortion?.name ? `(${item.selectedPortion.name})` : ''}</span>
-                      <span className="font-mono text-gray-300">${item.totalPrice.toFixed(2)}</span>
+                      <div>
+                        <span className="text-white font-medium">{item.quantity}x {item.menuItem.name}</span>
+                        {item.selectedPortion?.name && (
+                          <span className="text-gray-400 text-[11px] block">{item.selectedPortion.name}</span>
+                        )}
+                        {item.selectedOptions.length > 0 && (
+                          <span className="text-[10px] text-gray-500 block">
+                            {item.selectedOptions.map(o => o.optionName).join(', ')}
+                          </span>
+                        )}
+                      </div>
+                      <span className="font-mono text-gray-300 font-medium">${item.totalPrice.toFixed(2)}</span>
                     </div>
                   ))}
-                  <div className="pt-2 border-t border-white/5 flex justify-between text-gray-300 font-bold">
-                    <span>Paid via {confirmedOrder.checkoutDetails.paymentMethod.replace('_', ' ').toUpperCase()}</span>
-                    <span className="font-mono text-emerald-400">PAID</span>
+                  
+                  <div className="pt-2 border-t border-white/5 space-y-1 text-gray-400">
+                    <div className="flex justify-between">
+                      <span>Ontario HST (13%):</span>
+                      <span className="font-mono">${confirmedOrder.tax.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Kitchen Gratuity:</span>
+                      <span className="font-mono">${confirmedOrder.tip.toFixed(2)}</span>
+                    </div>
+                    <div className="pt-1 border-t border-white/5 flex justify-between text-white font-bold">
+                      <span>Paid via {confirmedOrder.checkoutDetails.paymentMethod.replace('_', ' ').toUpperCase()}</span>
+                      <span className="font-mono text-emerald-400">PAID</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <button
-                type="button"
-                onClick={onClose}
-                className="w-full py-3 bg-[#E5A93C] hover:bg-[#d4982d] text-black font-bold rounded-xl text-sm transition-colors shadow-lg"
-              >
-                Close & Return to Menu
-              </button>
+              {/* Action Navigation Buttons */}
+              <div className="space-y-2 pt-1">
+                <a
+                  href="https://maps.google.com/?q=Neebing+Roadhouse+Thunder+Bay"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-3 bg-white/10 hover:bg-white/20 border border-white/15 text-white font-bold rounded-xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-colors"
+                >
+                  <Navigation className="w-4 h-4 text-[#E5A93C]" />
+                  <span>Open Google Maps Navigation</span>
+                </a>
+
+                <button
+                  type="button"
+                  onClick={handleCloseAndReset}
+                  className="w-full py-3 bg-[#E5A93C] hover:bg-[#d4982d] text-black font-bold rounded-xl text-xs uppercase tracking-wider transition-colors shadow-lg"
+                >
+                  Close & Return to Menu
+                </button>
+              </div>
             </div>
           ) : (
             /* ==========================================
@@ -225,7 +298,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               {/* 1. Contact Information */}
               <div className="space-y-3">
                 <span className="font-bold uppercase tracking-wider text-[#E5A93C] block">
-                  1. Contact Information (For SMS Notifications)
+                  1. Contact Information (For SMS Notifications) <span className="text-red-400">*</span>
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
@@ -238,7 +311,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                         value={customerName}
                         onChange={(e) => setCustomerName(e.target.value)}
                         placeholder="John Doe"
-                        className="w-full pl-9 pr-3 py-2 bg-[#141618] border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#E5A93C]"
+                        className="w-full pl-9 pr-3 py-2 bg-[#121417] border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#E5A93C]"
                       />
                     </div>
                   </div>
@@ -253,18 +326,18 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                         value={customerPhone}
                         onChange={(e) => setCustomerPhone(e.target.value)}
                         placeholder="(807) 555-0199"
-                        className="w-full pl-9 pr-3 py-2 bg-[#141618] border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#E5A93C]"
+                        className="w-full pl-9 pr-3 py-2 bg-[#121417] border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#E5A93C]"
                       />
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* 2. Curbside Vehicle Identification */}
+              {/* 2. Curbside Vehicle Identification & Designated Stall Selection */}
               <div className="space-y-3 pt-3 border-t border-white/10">
                 <div className="flex items-center justify-between">
                   <span className="font-bold uppercase tracking-wider text-[#E5A93C] block">
-                    2. Curbside Vehicle Details (Optional)
+                    2. Curbside Pickup Details (Dedicated Stalls 1–4)
                   </span>
                   <label className="flex items-center gap-1.5 cursor-pointer text-gray-300">
                     <input
@@ -273,45 +346,57 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       onChange={(e) => setIsCurbside(e.target.checked)}
                       className="accent-[#E5A93C] rounded"
                     />
-                    <span className="text-xs sm:text-sm font-medium">Bring order to my car</span>
+                    <span className="text-xs sm:text-sm font-medium">Curbside Runner Delivery</span>
                   </label>
                 </div>
 
                 {/* Direct Curbside Instructions Callout */}
-                <div className="p-3 bg-[#E5A93C]/10 border border-[#E5A93C]/30 rounded-xl space-y-1.5 text-xs">
+                <div className="p-3 bg-[#E5A93C]/10 border border-[#E5A93C]/30 rounded-xl space-y-1 text-xs">
                   <div className="flex items-center gap-1.5 font-bold text-[#E5A93C]">
                     <Car className="w-3.5 h-3.5" />
-                    <span>Highway 61 Arrival Instructions:</span>
+                    <span>Dedicated Takeout Stalls 1–4</span>
                   </div>
                   <p className="text-gray-200 leading-relaxed">
-                    Upon arrival along Highway 61, pull directly into dedicated <strong>Takeout Stalls 1–4</strong>.
-                  </p>
-                  <p className="text-gray-300 leading-relaxed">
-                    Text/call <strong className="text-white font-mono">(807) 475-3544</strong> or reply to your SMS confirmation with your stall number for immediate runner service.
+                    Pull directly into marked Takeout Stalls 1–4 along the front lot. A runner will bring your hot order directly to your window.
                   </p>
                 </div>
 
                 {isCurbside && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 bg-[#141618] rounded-xl border border-white/10">
+                  <div className="space-y-3 p-3.5 bg-[#141618] rounded-xl border border-white/10">
+                    {/* Vehicle Description */}
                     <div>
-                      <label className="block text-gray-400 mb-1 text-xs font-medium">Vehicle Make / Color</label>
+                      <label className="block text-gray-400 mb-1 text-xs font-medium">Vehicle Make / Color *</label>
                       <input
                         type="text"
+                        required={isCurbside}
                         value={vehicleDescription}
                         onChange={(e) => setVehicleDescription(e.target.value)}
-                        placeholder="e.g. Grey Ford F-150 or Red Civic"
+                        placeholder="e.g., Silver Ford F-150 / Red Honda Civic"
                         className="w-full px-3 py-2 bg-[#1e2228] border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#E5A93C]"
                       />
                     </div>
+
+                    {/* Designated Pickup Stall Radio Pills */}
                     <div>
-                      <label className="block text-gray-400 mb-1 text-xs font-medium">Curbside Stall (If Parked)</label>
-                      <input
-                        type="text"
-                        value={curbsideSpot}
-                        onChange={(e) => setCurbsideSpot(e.target.value)}
-                        placeholder="e.g. Stall 1, Stall 2, or 'In Transit'"
-                        className="w-full px-3 py-2 bg-[#1e2228] border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#E5A93C]"
-                      />
+                      <label className="block text-gray-400 mb-1.5 text-xs font-medium">
+                        Designated Pickup Stall *
+                      </label>
+                      <div className="flex flex-wrap gap-2">
+                        {stallOptions.map((stall) => (
+                          <button
+                            key={stall}
+                            type="button"
+                            onClick={() => setCurbsideSpot(stall)}
+                            className={`px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all ${
+                              curbsideSpot === stall
+                                ? 'bg-[#E5A93C] text-black border-[#E5A93C] shadow-sm'
+                                : 'bg-[#1e2228] border-white/10 text-gray-300 hover:border-white/30'
+                            }`}
+                          >
+                            {stall}
+                          </button>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 )}
@@ -425,7 +510,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   <span className="font-mono text-white">${subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-gray-400">
-                  <span>HST (13%):</span>
+                  <span>HST (13% Ontario):</span>
                   <span className="font-mono text-white">${tax.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-gray-400">
@@ -456,7 +541,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             </form>
           )}
         </div>
-      </div>
+      </motion.div>
     </div>
+  )}
+</AnimatePresence>
   );
 };

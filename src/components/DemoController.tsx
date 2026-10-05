@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Clock, ShieldAlert, Sparkles, SlidersHorizontal, Megaphone, X } from 'lucide-react';
+import { Clock, ShieldAlert, Sparkles, SlidersHorizontal, Megaphone, X, CheckCircle } from 'lucide-react';
 import { AlertType } from './OperationalToast';
 
 interface DemoControllerProps {
@@ -31,18 +31,16 @@ export const DemoController: React.FC<DemoControllerProps> = ({
 
   return (
     <>
-      {/* Floating Trigger Button (when controller is hidden) */}
+      {/* Floating Trigger Button (when controller is hidden) - Center Right position */}
       {!isOpen && (
-        <div className="fixed bottom-4 left-4 z-50 animate-in fade-in duration-200">
+        <div className="fixed top-1/2 -translate-y-1/2 right-3 sm:right-4 z-50 animate-in fade-in duration-200">
           <button
             onClick={() => setIsOpen(true)}
-            className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-full bg-[#1e2228]/95 backdrop-blur-md border border-[#E5A93C]/50 text-[#E5A93C] shadow-[0_4px_20px_rgba(0,0,0,0.6)] text-xs font-semibold hover:bg-[#282d35] hover:border-[#E5A93C] hover:text-white transition-all active:scale-95 group"
+            className="w-10 h-10 rounded-full flex items-center justify-center bg-[#1e2228]/95 backdrop-blur-md border border-[#E5A93C]/50 text-[#E5A93C] shadow-[0_4px_20px_rgba(0,0,0,0.6)] hover:bg-[#282d35] hover:border-[#E5A93C] hover:text-white transition-all active:scale-95 group"
             title="Open Client Presentation Demo Controls"
             aria-label="Open Demo Controller"
           >
-            <SlidersHorizontal className="w-4 h-4 text-[#E5A93C] group-hover:rotate-45 transition-transform" />
-            <span className="font-chalk tracking-wide text-xs">Demo Controls</span>
-            <span className="w-2 h-2 rounded-full bg-[#E5A93C] animate-pulse" />
+            <SlidersHorizontal className="w-4.5 h-4.5 text-[#E5A93C] group-hover:rotate-45 transition-transform" />
           </button>
         </div>
       )}
@@ -158,25 +156,27 @@ export const DemoController: React.FC<DemoControllerProps> = ({
               <div className="flex items-center gap-1 bg-[#141618] p-1 rounded-lg border border-white/10">
                 <button
                   onClick={() => setIsKitchenThrottled(false)}
-                  className={`px-2 py-1 rounded font-medium transition-all flex items-center gap-1 ${
+                  className={`px-2.5 py-1 rounded font-medium transition-all flex items-center gap-1.5 ${
                     !isKitchenThrottled
                       ? 'bg-emerald-600 text-white font-semibold shadow-sm'
                       : 'text-gray-400 hover:text-white'
                   }`}
+                  title="Normal kitchen operations: Takeout and Dine-in open"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse" />
-                  Kitchen Open
+                  <span>Kitchen: Active / Open</span>
                 </button>
                 <button
                   onClick={() => setIsKitchenThrottled(true)}
-                  className={`px-2 py-1 rounded font-medium transition-all flex items-center gap-1 ${
+                  className={`px-2.5 py-1 rounded font-medium transition-all flex items-center gap-1.5 ${
                     isKitchenThrottled
                       ? 'bg-amber-600 text-white font-semibold shadow-sm'
                       : 'text-gray-400 hover:text-white'
                   }`}
+                  title="Peak dining volume: Takeout paused, Dine-in open"
                 >
-                  <ShieldAlert className="w-3 h-3 text-amber-200" />
-                  Takeout Paused
+                  <ShieldAlert className="w-3.5 h-3.5 text-amber-200" />
+                  <span>Kitchen: Takeout Paused (High Volume)</span>
                 </button>
               </div>
 

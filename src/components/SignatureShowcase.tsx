@@ -53,7 +53,7 @@ export const SignatureShowcase: React.FC<SignatureShowcaseProps> = ({
   ];
 
   return (
-    <section className="py-16 sm:py-24 bg-[#141618] border-b border-white/10 text-[#F5F5F3] relative overflow-hidden">
+    <section id="takeout-section" className="scroll-mt-20 py-16 sm:py-24 bg-[#141618] border-b border-white/10 text-[#F5F5F3] relative overflow-hidden">
       {/* Subtle floating chalkboard utensil textures */}
       <UtensilBackgroundParticles density="normal" />
 
@@ -89,11 +89,11 @@ export const SignatureShowcase: React.FC<SignatureShowcaseProps> = ({
               <div
                 key={item.id}
                 onClick={() => {
-                  if (!isLocked) onSelectItem(item);
+                  if (!isLocked && !isKitchenThrottled) onSelectItem(item);
                 }}
                 className={`group rounded-2xl overflow-hidden border transition-all duration-300 flex flex-col justify-between ${
-                  isLocked
-                    ? 'bg-[#181a1f] border-dashed border-gray-700 cursor-not-allowed opacity-85'
+                  isLocked || isKitchenThrottled
+                    ? 'bg-[#181a1f] border-white/10 opacity-85 cursor-not-allowed'
                     : 'bg-[#1a1e24] border-white/10 hover:border-[#E5A93C]/50 hover:shadow-xl cursor-pointer'
                 }`}
               >
@@ -160,12 +160,12 @@ export const SignatureShowcase: React.FC<SignatureShowcaseProps> = ({
                         disabled={isKitchenThrottled}
                         className={`w-full py-2.5 px-3 rounded-xl font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all ${
                           isKitchenThrottled
-                            ? 'bg-gray-800 text-gray-500 cursor-not-allowed border border-gray-700'
+                            ? 'bg-gray-800/80 text-gray-400 cursor-not-allowed border border-gray-700'
                             : 'bg-white/10 hover:bg-[#E5A93C] text-white hover:text-black active:scale-95'
                         }`}
                       >
                         <Plus className="w-3.5 h-3.5" />
-                        <span>{isKitchenThrottled ? 'Takeout Paused' : 'Customize & Add'}</span>
+                        <span>{isKitchenThrottled ? 'Takeout Unavailable' : 'Customize & Add'}</span>
                       </button>
                     )}
                   </div>

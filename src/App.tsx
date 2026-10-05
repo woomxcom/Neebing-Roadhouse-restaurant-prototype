@@ -11,7 +11,9 @@ import { ItemCustomizerModal } from './components/ItemCustomizerModal';
 import { CartDrawer } from './components/CartDrawer';
 import { CheckoutModal } from './components/CheckoutModal';
 import { LargePartyModal } from './components/LargePartyModal';
+import { VolleyballModal } from './components/VolleyballModal';
 import { VenueGuide } from './components/VenueGuide';
+import { SocialProofReviews } from './components/SocialProofReviews';
 import { HoursAndLocation } from './components/HoursAndLocation';
 import { Footer } from './components/Footer';
 import { ShoppingBag, ArrowRight } from 'lucide-react';
@@ -28,6 +30,7 @@ export default function App() {
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState<boolean>(false);
   const [isLargePartyOpen, setIsLargePartyOpen] = useState<boolean>(false);
+  const [isVolleyballOpen, setIsVolleyballOpen] = useState<boolean>(false);
   const [activeCustomizerItem, setActiveCustomizerItem] = useState<MenuItem | null>(null);
 
   // Checkout Params
@@ -194,17 +197,23 @@ export default function App() {
           onSelectItem={(item) => setActiveCustomizerItem(item)}
         />
 
-        {/* 6. "Know Before You Go" Venue Clarity Section */}
-        <VenueGuide onOpenLargePartyModal={() => setIsLargePartyOpen(true)} />
+        {/* 6. "Know Before You Go" Venue Atmosphere & Zones Section */}
+        <VenueGuide
+          onOpenLargePartyModal={() => setIsLargePartyOpen(true)}
+          onOpenVolleyballModal={() => setIsVolleyballOpen(true)}
+        />
 
-        {/* 7. Highway 61 Logistics & Hours */}
+        {/* 7. Highway 61 Local Social Proof & Customer Validation Strip */}
+        <SocialProofReviews />
+
+        {/* 8. Highway 61 Logistics & Hours */}
         <HoursAndLocation />
       </main>
 
-      {/* 8. Tavern Footer */}
+      {/* 9. Tavern Footer */}
       <Footer />
 
-      {/* 9. Non-Intrusive Floating Operational Toast Notification */}
+      {/* 10. Non-Intrusive Floating Operational Toast Notification */}
       <OperationalToast
         alertType={alertType}
         isDismissed={isAlertDismissed}
@@ -213,13 +222,19 @@ export default function App() {
         hasActiveCart={cartItemCount > 0}
       />
 
-      {/* 10. Large Party Booking & Inquiry Modal (6+ Guests) */}
+      {/* 11. Large Party Booking & Inquiry Modal (6+ Guests) */}
       <LargePartyModal
         isOpen={isLargePartyOpen}
         onClose={() => setIsLargePartyOpen(false)}
       />
 
-      {/* 11. Slide-Up Item Customizer Modal */}
+      {/* 12. Sand Volleyball League Inquiry Modal */}
+      <VolleyballModal
+        isOpen={isVolleyballOpen}
+        onClose={() => setIsVolleyballOpen(false)}
+      />
+
+      {/* 13. Slide-Up Item Customizer / Tasting Notes Modal */}
       <ItemCustomizerModal
         item={activeCustomizerItem}
         onClose={() => setActiveCustomizerItem(null)}
@@ -227,7 +242,7 @@ export default function App() {
         isKitchenThrottled={isKitchenThrottled}
       />
 
-      {/* 12. Slide-Out Takeout Cart Drawer */}
+      {/* 14. Slide-Out Takeout Cart Drawer */}
       <CartDrawer
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
@@ -238,7 +253,7 @@ export default function App() {
         isKitchenThrottled={isKitchenThrottled}
       />
 
-      {/* 13. Single-Screen Curbside Checkout Modal */}
+      {/* 15. Single-Screen Curbside Checkout Modal */}
       <CheckoutModal
         isOpen={isCheckoutOpen}
         onClose={() => setIsCheckoutOpen(false)}
@@ -253,7 +268,7 @@ export default function App() {
         onClearCart={() => setCartItems([])}
       />
 
-      {/* 14. Accessible Mobile Sticky Bottom Bar (52px Touch Height, Active Cart Ticker) */}
+      {/* 16. Accessible Mobile Sticky Bottom Bar (52px Touch Height, Active Cart Ticker) */}
       {cartItemCount > 0 && !isCartOpen && !isCheckoutOpen && (
         <aside aria-label="Persistent mobile checkout" className="md:hidden fixed bottom-4 left-3 right-3 z-30 animate-in slide-in-from-bottom duration-200">
           <button

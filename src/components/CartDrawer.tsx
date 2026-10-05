@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { CartItem } from '../types';
 import { 
   X, 
@@ -38,8 +39,6 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const [customTip, setCustomTip] = useState<string>('');
   const [showCustomTipInput, setShowCustomTipInput] = useState(false);
 
-  if (!isOpen) return null;
-
   // Financial calculations
   const subtotal = items.reduce((acc, item) => acc + item.totalPrice, 0);
   const hstTax = subtotal * 0.13; // 13% Ontario HST
@@ -60,32 +59,62 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden bg-black/70 backdrop-blur-xs flex justify-end animate-in fade-in duration-200">
-      <div 
-        className="w-full max-w-md bg-[#1a1e24] text-[#F5F5F3] h-full shadow-2xl border-l border-white/10 flex flex-col justify-between overflow-hidden animate-in slide-in-from-right duration-300"
-      >
-        {/* Drawer Header */}
-        <div className="p-4 sm:p-5 border-b border-white/10 bg-[#141618] flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <ShoppingBag className="w-5 h-5 text-[#E5A93C]" />
-            <h3 className="font-chalk text-2xl tracking-wide text-white">
-              YOUR TAKEOUT ORDER
-            </h3>
-            <span className="text-xs font-mono text-gray-400 bg-white/10 px-2 py-0.5 rounded">
-              {items.length} {items.length === 1 ? 'item' : 'items'}
-            </span>
-          </div>
-          <button
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-50 overflow-hidden flex justify-end">
+          {/* Backdrop with fade transition */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
             onClick={onClose}
-            className="p-1.5 text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition-colors"
-            aria-label="Close cart"
+            className="fixed inset-0 bg-black/70 backdrop-blur-xs cursor-pointer"
+          />
+
+          {/* Drawer Panel with spring slide-in / slide-out */}
+          <motion.div
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ type: 'spring', damping: 30, stiffness: 300, mass: 0.85 }}
+            className="relative w-full max-w-md bg-[#1a1e24] text-[#F5F5F3] h-full shadow-2xl border-l border-white/10 flex flex-col justify-between overflow-hidden z-10"
           >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+            {/* Drawer Header */}
+            <div className="p-4 sm:p-5 border-b border-white/10 bg-[#141618] flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <ShoppingBag className="w-5 h-5 text-[#E5A93C]" />
+                <h3 className="font-chalk text-2xl tracking-wide text-white">
+                  YOUR TAKEOUT ORDER
+                </h3>
+                <span className="text-xs font-mono text-gray-400 bg-white/10 px-2 py-0.5 rounded">
+                  {items.length} {items.length === 1 ? 'item' : 'items'}
+                </span>
+              </div>
+              <button
+                onClick={onClose}
+                className="p-1.5 text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition-colors"
+                aria-label="Close cart"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
         {/* Cart Items List */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {/* Peak Capacity / Takeout Paused Friendly Alert */}
+          {isKitchenThrottled && (
+            <div className="p-3.5 bg-amber-950/80 border border-amber-500/50 rounded-xl text-amber-200 text-xs space-y-1.5 shadow-md animate-in fade-in duration-200">
+              <div className="flex items-center gap-2 text-white font-bold">
+                <Info className="w-4 h-4 text-[#E5A93C] shrink-0" />
+                <span>Kitchen at Peak Capacity</span>
+              </div>
+              <p className="text-[11px] leading-relaxed text-gray-200">
+                Our kitchen is currently at peak capacity for dining room service. Online takeout ordering is temporarily paused to ensure food quality. Please check back shortly or join us in the dining room / sports pub!
+              </p>
+            </div>
+          )}
+
           {items.length === 0 ? (
             <div className="text-center py-16 px-4">
               <div className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-4 text-gray-400">
@@ -341,7 +370,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             </button>
           </div>
         )}
-      </div>
+      </motion.div>
     </div>
+  )}
+</AnimatePresence>
   );
 };

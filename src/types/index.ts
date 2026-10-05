@@ -24,6 +24,10 @@ export interface MenuItem {
   isVegetarian?: boolean;
   isNew?: boolean;
   badge?: string;
+  isAlcohol?: boolean;
+  dineInOnly?: boolean;
+  tastingNotes?: string;
+  drinkType?: 'draft' | 'cocktail' | 'refresher';
   daypartLock?: {
     unlockedAtHour: number; // e.g., 16 for 4:00 PM, 17 for 5:00 PM
     label: string; // e.g., "Available After 4:00 PM"

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Users, Calendar, Clock, MapPin, CheckCircle2, X, Phone, User, Sparkles, MessageSquare } from 'lucide-react';
 
 interface LargePartyModalProps {
@@ -17,8 +18,6 @@ export const LargePartyModal: React.FC<LargePartyModalProps> = ({ isOpen, onClos
   const [notes, setNotes] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  if (!isOpen) return null;
-
   const partyChips = ['6', '8', '10', '12', '15+'];
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -32,29 +31,48 @@ export const LargePartyModal: React.FC<LargePartyModalProps> = ({ isOpen, onClos
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/85 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 animate-in fade-in duration-200">
-      <div className="relative w-full max-w-lg bg-[#1A1D23] text-[#F5F5F3] rounded-2xl border border-white/15 shadow-2xl overflow-hidden max-h-[95vh] flex flex-col">
-        {/* Header */}
-        <div className="p-4 sm:p-5 border-b border-white/10 bg-[#141618] flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#E5A93C]/15 border border-[#E5A93C]/30 text-[#E5A93C] flex items-center justify-center shrink-0">
-              <Users className="w-5 h-5" />
-            </div>
-            <div>
-              <span className="font-script text-[#E5A93C] text-base block -mb-1">Groups & Teams</span>
-              <h3 className="font-chalk text-2xl sm:text-3xl tracking-wide text-white">
-                LARGE PARTY INQUIRY (6+)
-              </h3>
-            </div>
-          </div>
-          <button
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-3 sm:p-6">
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.22, ease: 'easeOut' }}
             onClick={handleResetAndClose}
-            className="p-1.5 text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition-colors"
-            aria-label="Close modal"
+            className="fixed inset-0 bg-black/85 backdrop-blur-sm cursor-pointer"
+          />
+
+          {/* Modal Container */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.94, y: 16 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 12 }}
+            transition={{ type: 'spring', damping: 28, stiffness: 340, mass: 0.8 }}
+            className="relative w-full max-w-lg bg-[#1A1D23] text-[#F5F5F3] rounded-2xl border border-white/15 shadow-2xl overflow-hidden max-h-[95vh] flex flex-col z-10"
           >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+            {/* Header */}
+            <div className="p-4 sm:p-5 border-b border-white/10 bg-[#141618] flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#E5A93C]/15 border border-[#E5A93C]/30 text-[#E5A93C] flex items-center justify-center shrink-0">
+                  <Users className="w-5 h-5" />
+                </div>
+                <div>
+                  <span className="font-script text-[#E5A93C] text-base block -mb-1">Groups & Teams</span>
+                  <h3 className="font-chalk text-2xl sm:text-3xl tracking-wide text-white">
+                    LARGE PARTY INQUIRY (6+)
+                  </h3>
+                </div>
+              </div>
+              <button
+                onClick={handleResetAndClose}
+                className="p-1.5 text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition-colors"
+                aria-label="Close modal"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 text-xs sm:text-sm">
@@ -318,7 +336,9 @@ export const LargePartyModal: React.FC<LargePartyModalProps> = ({ isOpen, onClos
             </form>
           )}
         </div>
-      </div>
+      </motion.div>
     </div>
+  )}
+</AnimatePresence>
   );
 };

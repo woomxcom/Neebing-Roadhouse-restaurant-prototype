@@ -13,35 +13,34 @@ export const Hero: React.FC<HeroProps> = ({
   isKitchenThrottled,
 }) => {
   return (
-    <section id="hero" className="relative overflow-hidden border-b border-white/10 text-[#F5F5F3] min-h-[540px] sm:min-h-[620px] flex items-center">
-      {/* Authentic Ambient Tavern & Bar Backdrop */}
-      <div className="absolute inset-0 z-0">
+    <section id="hero" className="scroll-mt-20 relative overflow-hidden border-b border-white/10 text-[#F5F5F3] min-h-[540px] sm:min-h-[620px] flex items-center">
+      {/* Roadhouse Tavern Interior Background */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
         <img
           src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=2000&q=85"
-          alt="Neebing Roadhouse Bar and Dining Room"
+          alt="Neebing Roadhouse Dining Room and Tavern Interior"
           referrerPolicy="no-referrer"
-          className="w-full h-full object-cover object-[center_right] sm:object-center brightness-[0.88]"
+          className="w-full h-full object-cover object-center"
         />
-        {/* Soft left-aligned gradient ensuring maximum text contrast on the left while revealing the bright, atmospheric tavern interior on the right */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#121417] via-[#121417]/75 via-45% to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#121417]/80 via-transparent to-black/20" />
+        {/* Subtle dark overlay (black, 40% opacity) across the image */}
+        <div className="absolute inset-0 bg-black/40" />
       </div>
 
       {/* Left-Aligned Text Content & Call to Actions */}
       <div className="w-full max-w-7xl mx-auto px-6 sm:px-8 py-20 sm:py-28 relative z-10 flex justify-start">
         <div className="max-w-2xl text-left">
           {/* Crisp Subtitle */}
-          <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.2em] text-[#E5A93C] mb-3">
+          <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.2em] text-[#E5A93C] mb-3 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
             Highway 61 Landmark • Thunder Bay Since 1947
           </p>
 
           {/* Confident Headline */}
-          <h1 className="font-chalk text-5xl sm:text-7xl md:text-8xl uppercase tracking-wider text-white mb-6 leading-none drop-shadow-sm">
+          <h1 className="font-chalk text-5xl sm:text-7xl md:text-8xl uppercase tracking-wider text-white mb-6 leading-none drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]">
             Neebing Roadhouse
           </h1>
 
           {/* Short, natural 2-sentence description */}
-          <p className="text-gray-200 text-base sm:text-lg md:text-xl font-normal leading-relaxed mb-10 drop-shadow-sm">
+          <p className="text-gray-100 text-base sm:text-lg md:text-xl font-normal leading-relaxed mb-10 drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
             Hearty comfort food cooked fresh from scratch, paired with ice-cold Sub-Zero draught and Thunder Bay’s warmest tavern hospitality. Whether you’re stopping in for famous jumbo wings after work or dining with family, everyone is welcome on Highway 61.
           </p>
 
