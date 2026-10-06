@@ -149,6 +149,10 @@ export default function App() {
     document.getElementById('menu-chalkboard')?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const scrollToSignatures = () => {
+    document.getElementById('takeout-section')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <div className="min-h-screen w-full bg-[#121417] text-[#F5F5F3] flex flex-col font-body selection:bg-[#E5A93C] selection:text-black">
       {/* 1. Client Presentation Demo Bar (Live controls for owners) */}
@@ -179,7 +183,7 @@ export default function App() {
         {/* 3. Hero Section with Cinematic Photography */}
         <Hero
           onScrollToMenu={scrollToMenu}
-          onOpenTakeout={scrollToMenu}
+          onOpenTakeout={scrollToSignatures}
           isKitchenThrottled={isKitchenThrottled}
         />
 

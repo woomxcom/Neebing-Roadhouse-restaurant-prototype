@@ -22,8 +22,10 @@ export const Hero: React.FC<HeroProps> = ({
           referrerPolicy="no-referrer"
           className="w-full h-full object-cover object-center"
         />
-        {/* Subtle dark overlay (black, 40% opacity) across the image */}
-        <div className="absolute inset-0 bg-black/40" />
+        {/* Horizontal directional gradient overlay for high text legibility on the left */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0c0e11]/95 via-[#0c0e11]/80 md:via-[#0c0e11]/70 to-black/40" />
+        {/* Subtle vertical grounding gradient */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#121417] via-transparent to-black/40" />
       </div>
 
       {/* Left-Aligned Text Content & Call to Actions */}
